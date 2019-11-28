@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .hide{
+            display: none;
+        }
+        .loading{
+            position: fixed;
+            top:0;
+            left:0;
+            bottom: 0;
+            right:0;
+            background-color: black;
+            opacity: 40%;
+        }
+        .loading-icon{
+            width:100px;
+            height:30px;
+            position: fixed;
+            top:50%;
+            left:50%;
+            margin-top: -15px;
+            margin-left: -50px;
+        }
+    </style>
+</head>
+<body>
+<h1>代码发布</h1>
+<p>
+    仓库地址：<input id="repo" type="text" name="repo">
+    <br>
+    项目名称：<input id="project" type="text" name="project">
+    <br>
+    <input id='but' type="button" value="提交" >
+</p>
+
+<div class="loading hide">
+    <div class="loading-icon"><img src="{% static 'loading.gif' %}" alt=""></div>
+</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+<script>
+    $('#but').click(function(){
+        var repo=$('#repo').val();
+        var project=$('#project').val();
+        $('.loading').removeClass('hide');
+        $.ajax({
+            url:'/petch/code/',
+            type:'POST',
+            data:{repo:repo,project:project},
+            success:function(res){
+                $('.loading').addClass('hide')
+            },
+            error:function(res){
+                $('.loading').addClass('hide')
+            }
+        })
+    })
+
+
+</script>
+</html>

@@ -1,0 +1,213 @@
+import os
+import shutil
+
+from django.shortcuts import render
+from utils.repository import GitRepository
+from dmfb import settings
+from utils.paramk import SSHProxy
+
+from django.views import View
+from django import forms
+from web import models
+from django.shortcuts import render,HttpResponse,redirect
+
+
+# Create your views here.
+
+def petch_code(request,*args,**kwargs):
+    if request.method == 'GET':
+        return render(request, 'petch_code.html')
+    # 1. 将代码拉下来
+    repo = request.POST.get('repo')
+    project = request.POST.get('project')
+    local_path = os.path.join(settings.BASE_DIR,'codes',project)
+
+    GitRepository(local_path,repo)
+
+    # 2. 压缩文件
+    abs_file_path = shutil.make_archive(
+        base_name=os.path.join(settings.BASE_DIR,'zipcodes',project),  # 压缩包文件路径
+        format='zip',  # “zip”, “tar”
+        root_dir=local_path  # 被压缩的文件目录
+    )
+
+    # 3. 将代码传到服务器
+    with SSHProxy('192.168.16.190', 22, 'root', r'C:\Users\liubing\.ssh\id_rsa') as proxy:
+        proxy.upload(abs_file_path, os.path.join('/home/t est/',project))
+    return render(request, 'petch_code.html')
+
+# 私钥modelform
+class RsaModelForm(forms.ModelForm):
+    class Meta:
+        model = models.Rsa
+        fields = '__all__'
+
+# 私钥展示
+def rsa(request):
+    all_rsa = models.Rsa.objects.filter()
+    return render(request,'rsa.html',{'all_rsa':all_rsa})
+
+# 私钥添加
+def add_rsa(request):
+    if request.method == 'GET':
+        rsa_obj = RsaModelForm()
+        return render(request,'add_rsa.html',{'rsa_obj':rsa_obj})
+    else:
+        rsa_obj = RsaModelForm(request.POST)
+        if rsa_obj.is_valid():
+            rsa_obj.save()
+            return redirect('rsa')
+        else:
+            return render(request, 'add_rsa.html', {'rsa_obj': rsa_obj})
+
+# 私钥删除
+def del_rsa(request,id):
+    models.Rsa.objects.filter(pk=id).delete()
+    return redirect('rsa')
+
+# 私钥编辑
+def edit_rsa(request,id):
+    rsa_obj = models.Rsa.objects.filter(pk=id).first()
+    if request.method == 'GET':
+        rsa_obj = RsaModelForm(instance=rsa_obj)
+        return render(request,'add_rsa.html',{'rsa_obj':rsa_obj})
+    else:
+        rsa_obj = RsaModelForm(request.POST,instance=rsa_obj)
+        if rsa_obj.is_valid():
+            rsa_obj.save()
+            return redirect('rsa')
+        else:
+            return render(request, 'add_rsa.html', {'rsa_obj': rsa_obj})
+
+
+
+# 服务器modelform
+class ServerModelForm(forms.ModelForm):
+    class Meta:
+        model = models.Server
+        fields = '__all__'
+
+# 服务器展示
+def server(request):
+    all_server = models.Server.objects.filter()
+    return render(request,'server.html',{'all_server':all_server})
+
+# 服务器添加
+def add_server(request):
+    if request.method == 'GET':
+        server_obj = ServerModelForm()
+        return render(request,'add_server.html',{'server_obj':server_obj})
+    else:
+        server_obj = ServerModelForm(request.POST)
+        if server_obj.is_valid():
+            server_obj.save()
+            return redirect('server')
+        else:
+            return render(request, 'add_server.html', {'server_obj': server_obj})
+
+# 服务器删除
+def del_server(request,id):
+    models.Server.objects.filter(pk=id).delete()
+    return redirect('server')
+
+# 服务器编辑
+def edit_server(request,id):
+    server_obj = models.Server.objects.filter(pk=id).first()
+    if request.method == 'GET':
+        server_obj = ServerModelForm(instance=server_obj)
+        return render(request,'add_server.html',{'server_obj':server_obj})
+    else:
+        server_obj = ServerModelForm(request.POST,instance=server_obj)
+        if server_obj.is_valid():
+            server_obj.save()
+            return redirect('server')
+        else:
+            return render(request, 'add_server.html', {'server_obj': server_obj})
+
+
+# 项目modelform
+class ProjectModelForm(forms.ModelForm):
+    class Meta:
+        model = models.Project
+        fields = '__all__'
+
+# 项目展示
+def project(request):
+    all_project = models.Project.objects.filter()
+    return render(request,'project.html',{'all_project':all_project})
+
+# 项目添加
+def add_project(request):
+    if request.method == 'GET':
+        project_obj = ProjectModelForm()
+        return render(request,'add_project.html',{'project_obj':project_obj})
+    else:
+        project_obj = ProjectModelForm(request.POST)
+        if project_obj.is_valid():
+            project_obj.save()
+            return redirect('project')
+        else:
+            return render(request, 'add_project.html', {'project_obj': project_obj})
+
+# 项目删除
+def del_project(request,id):
+    models.Project.objects.filter(pk=id).delete()
+    return redirect('project')
+
+# 项目编辑
+def edit_project(request,id):
+    project_obj = models.Project.objects.filter(pk=id).first()
+    if request.method == 'GET':
+        project_obj = ProjectModelForm(instance=project_obj)
+        return render(request,'add_project.html',{'project_obj':project_obj})
+    else:
+        project_obj = ProjectModelForm(request.POST,instance=project_obj)
+        if project_obj.is_valid():
+            project_obj.save()
+            return redirect('project')
+        else:
+            return render(request, 'add_project.html', {'project_obj': project_obj})
+
+
+# 环境modelform
+class ProjectEnvModelForm(forms.ModelForm):
+    class Meta:
+        model = models.ProjectEnv
+        fields = '__all__'
+
+# 环境展示
+def projectenv(request):
+    all_projectenv = models.ProjectEnv.objects.filter()
+    return render(request,'projectenv.html',{'all_projectenv':all_projectenv})
+
+# 环境添加
+def add_projectenv(request):
+    if request.method == 'GET':
+        projectenv_obj = ProjectEnvModelForm()
+        return render(request,'add_projectenv.html',{'projectenv_obj':projectenv_obj})
+    else:
+        projectenv_obj = ProjectEnvModelForm(request.POST)
+        if projectenv_obj.is_valid():
+            projectenv_obj.save()
+            return redirect('projectenv')
+        else:
+            return render(request, 'add_projectenv.html', {'projectenv_obj': projectenv_obj})
+
+# 环境删除
+def del_projectenv(request,id):
+    models.ProjectEnv.objects.filter(pk=id).delete()
+    return redirect('projectenv')
+
+# 环境编辑
+def edit_projectenv(request,id):
+    projectenv_obj = models.ProjectEnv.objects.filter(pk=id).first()
+    if request.method == 'GET':
+        projectenv_obj = ProjectEnvModelForm(instance=projectenv_obj)
+        return render(request,'add_projectenv.html',{'projectenv_obj':projectenv_obj})
+    else:
+        projectenv_obj = ProjectEnvModelForm(request.POST,instance=projectenv_obj)
+        if projectenv_obj.is_valid():
+            projectenv_obj.save()
+            return redirect('projectenv')
+        else:
+            return render(request, 'add_projectenv.html', {'projectenv_obj': projectenv_obj})
