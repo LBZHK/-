@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div>
+    <a href="{% url 'add_server' %}" class="btn btn-primary">添加</a>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>主机名</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for server in all_server %}
+                <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ server.hostname }}</td>
+                <td>
+                    <a href="{% url 'edit_server' server.id %}" >编辑</a>
+                    <a href="#" type="button" onclick="removeRow(this,'{% url 'del_server' server.id %}')">删除</a>
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+         function removeRow(ths,url){
+             var result = confirm('是否确定要删除？');
+             if(result){
+                  $.ajax({
+                      url:url,
+                      type:'GET',
+                      dataType:'JSON',
+                      success(arg){
+                          if(arg.status){
+                              $(ths).parent().parent().remove();
+                          }
+                      }
+              })
+             }
+         }
+    </script>
+{% endblock %}

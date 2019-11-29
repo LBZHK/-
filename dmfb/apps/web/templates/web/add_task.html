@@ -1,0 +1,65 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<form class="form-horizontal" method="post">
+      <div class="form-group">
+    <label for="title" class="col-sm-2 control-label">项目名称 </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="title" value="{{ project.title }}" disabled>
+    </div>
+  </div>
+      <div class="form-group">
+    <label for="repo" class="col-sm-2 control-label">git地址 </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="repo" value="{{project.repo}}" disabled>
+    </div>
+  </div>
+      <div class="form-group">
+    <label for="env" class="col-sm-2 control-label">项目环境 </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="env" value="{{env_obj.get_env_display}}" disabled>
+    </div>
+  </div>
+      <div class="form-group">
+    <label for="path" class="col-sm-2 control-label">线上路径 </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="path" value="{{env_obj.path}}" disabled>
+    </div>
+  </div>
+      <div class="form-group">
+    <label for="server" class="col-sm-2 control-label">发布服务器 </label>
+    <div class="col-sm-10">
+        {% for server in env_obj.servers.all %}
+        <input type="text" class="form-control" id="server" value="{{server}}" disabled>
+        {% endfor %}
+    </div>
+  </div>
+      <div class="form-group">
+    <label for="tag" class="col-sm-2 control-label">版本 </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="tag" name="tag">
+    </div>
+  </div>
+      <div class="form-group">
+    <label for="branch" class="col-sm-2 control-label">分支 </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="branch" name="branch">
+    </div>
+  </div>
+      <div class="form-group">
+    <label for="commit" class="col-sm-2 control-label">提交记录 </label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="commit" name="commit">
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-default">提交</button>
+    </div>
+  </div>
+</form>
+
+
+{% endblock %}

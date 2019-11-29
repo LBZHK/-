@@ -1,0 +1,68 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+<div>
+    <h1>任务清单：{{ env_obj }}</h1>
+    <a href="{% url 'add_deploy' env_id=env_obj.id %}" class="btn btn-primary">添加</a>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>任务ID</th>
+                <th>状态</th>
+                <th>环境</th>
+                <th>版本</th>
+                <th>分支</th>
+                <th>提交记录</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for deploy in all_deploy %}
+                <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ deploy.uid }}</td>
+                <td>{{ deploy.get_status_display }}</td>
+                <td>{{ deploy.env }}</td>
+                <td>{{ deploy.tag|default:'无' }}</td>
+                <td>{{ deploy.branch|default:'无' }}</td>
+                <td>{{ deploy.commit|default:'无' }}</td>
+                <td>
+                    {% if deploy.status == 1 %}
+                    <a href="{% url 'edit_deploy' deploy.id %}">编辑</a>
+                    <a href="#"  onclick="removeRow(this,'{% url 'del_deploy' deploy.id %}')">删除</a>
+                        {% else %} X
+                    {% endif %}
+
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+         function removeRow(ths,url){
+             var result = confirm('是否确定要删除？');
+             if(result){
+                  $.ajax({
+                      url:url,
+                      type:'GET',
+                      dataType:'JSON',
+                      success(arg){
+                          if(arg.status){
+                              $(ths).parent().parent().remove();
+                          }
+                      }
+              })
+             }
+         }
+    </script>
+{% endblock %}

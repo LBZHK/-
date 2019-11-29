@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+{% load deploy %}
+
+{% block content %}
+
+<div>
+    <a href="{% url 'add_projectenv' %}" class="btn btn-primary">添加</a>
+
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>项目名</th>
+                <th>环境</th>
+                <th>线上部署路径</th>
+                <th>服务器</th>
+                <th>发布任务</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for projectenv in all_projectenv %}
+                <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ projectenv.project }}</td>
+                <td>{{ projectenv.get_env_display }}</td>
+                <td>{{ projectenv.path }}</td>
+                <td>
+                    {% for server in projectenv.servers.all %}
+                        <span style="border: 1px solid #dddddd; padding:5px;">{{ server }}</span>
+                    {% endfor %}
+                </td>
+                <td><a href="{% url 'deploy' env_id=projectenv.id %}" >发布任务（{% un_deploy_num projectenv %}）</a></td>
+                <td>
+                    <a href="{% url 'edit_projectenv' projectenv.id %}">编辑</a>
+                    <a href="#" type="button" onclick="removeRow(this,'{% url 'del_projectenv' projectenv.id %}')">删除</a>
+                </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+</div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+         function removeRow(ths,url){
+             var result = confirm('是否确定要删除？');
+             if(result){
+                  $.ajax({
+                      url:url,
+                      type:'GET',
+                      dataType:'JSON',
+                      success(arg){
+                          if(arg.status){
+                              $(ths).parent().parent().remove();
+                          }
+                      }
+              })
+             }
+         }
+    </script>
+{% endblock %}

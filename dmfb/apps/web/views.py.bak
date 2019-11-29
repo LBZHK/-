@@ -80,12 +80,12 @@ def edit_rsa(request,id):
             return render(request, 'add_rsa.html', {'rsa_obj': rsa_obj})
 
 
-
 # 服务器modelform
 class ServerModelForm(forms.ModelForm):
     class Meta:
         model = models.Server
         fields = '__all__'
+
 
 # 服务器展示
 def server(request):
@@ -211,7 +211,3 @@ def edit_projectenv(request,id):
             return redirect('projectenv')
         else:
             return render(request, 'add_projectenv.html', {'projectenv_obj': projectenv_obj})
-			
-			
-def heihei(request):
-	return HttpResponse('嘿嘿嘿')

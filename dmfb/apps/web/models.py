@@ -33,4 +33,38 @@ class ProjectEnv(models.Model):
     servers = models.ManyToManyField(verbose_name='服务器', to='Server')
 
     def __str__(self):
-        return self.env
+        return "%s(%s)"%(self.project, self.get_env_display())
+
+
+class DeployTask(models.Model):
+    uid = models.CharField(verbose_name='任务ID', max_length=64,help_text="任务ID格式为：项目-版本-时间，例如 cmdb-v1-201911012359.zip")
+    status_choices = (
+        (1, '待发布'),
+        (2, '发布中'),
+        (3, '成功'),
+        (4, '失败'),
+    )
+    status = models.PositiveSmallIntegerField(verbose_name='状态', choices=status_choices, default=1)
+
+    env = models.ForeignKey(verbose_name='环境', to='ProjectEnv')
+
+    # 正式发布用tag
+    tag = models.CharField(verbose_name='版本', max_length=32,null=True,blank=True)
+
+    # 测试发布用branch 、commit
+    branch = models.CharField(verbose_name='分支', max_length=32,null=True,blank=True)
+    commit = models.CharField(verbose_name='提交记录', max_length=40,null=True,blank=True)
+
+
+class DeployServer(models.Model):
+    """
+    上线记录
+    """
+    deploy = models.ForeignKey(verbose_name='部署', to='DeployTask')
+    server = models.ForeignKey(verbose_name='服务器', to='Server')
+    status_choices = (
+        (1, '发布中'),
+        (2, '失败'),
+        (3, '成功'),
+    )
+    status = models.PositiveSmallIntegerField(verbose_name='状态', choices=status_choices)

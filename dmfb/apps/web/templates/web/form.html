@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="form">
+    <form action="" method="post">
+        {% for form in form_obj %}
+            <br>
+            <label for="{{ form.id_for_label }}">{{ form.label }}</label>
+            {{ form }}
+            {{ form.errors.0 }}
+        {% endfor %}
+        <input type="submit" value="提交">
+    </form>
+</div>
+
+{% endblock %}

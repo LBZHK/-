@@ -15,30 +15,34 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from apps.web import views
+from web.views import project,rsa,server,deploy
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^petch/code/$', views.petch_code),
 
-    url(r'^rsa/$', views.rsa,name='rsa'),
-    url(r'^add/rsa/$', views.add_rsa,name='add_rsa'),
-    url(r'^del/rsa/(\d+)/$', views.del_rsa,name='del_rsa'),
-    url(r'^edit/rsa/(\d+)/$', views.edit_rsa,name='edit_rsa'),
+    url(r'^rsa/$', rsa.rsa,name='rsa'),
+    url(r'^add/rsa/$', rsa.add_rsa,name='add_rsa'),
+    url(r'^del/rsa/(\d+)/$', rsa.del_rsa,name='del_rsa'),
+    url(r'^edit/rsa/(\d+)/$', rsa.edit_rsa,name='edit_rsa'),
 
-    url(r'^server/$', views.server, name='server'),
-    url(r'^add/server/$', views.add_server, name='add_server'),
-    url(r'^del/server/(\d+)/$', views.del_server, name='del_server'),
-    url(r'^edit/server/(\d+)/$', views.edit_server, name='edit_server'),
+    url(r'^server/$', server.server, name='server'),
+    url(r'^add/server/$', server.add_server, name='add_server'),
+    url(r'^del/server/(\d+)/$', server.del_server, name='del_server'),
+    url(r'^edit/server/(\d+)/$', server.edit_server, name='edit_server'),
 
-    url(r'^project/$', views.project, name='project'),
-    url(r'^add/project/$', views.add_project, name='add_project'),
-    url(r'^del/project/(\d+)/$', views.del_project, name='del_project'),
-    url(r'^edit/project/(\d+)/$', views.edit_project, name='edit_project'),
+    url(r'^project/$', project.project, name='project'),
+    url(r'^add/project/$', project.add_project, name='add_project'),
+    url(r'^del/project/(\d+)/$', project.del_project, name='del_project'),
+    url(r'^edit/project/(\d+)/$', project.edit_project, name='edit_project'),
 
-    url(r'^projectenv/$', views.projectenv, name='projectenv'),
-    url(r'^add/projectenv/$', views.add_projectenv, name='add_projectenv'),
-    url(r'^del/projectenv/(\d+)/$', views.del_projectenv, name='del_projectenv'),
-    url(r'^edit/projectenv/(\d+)/$', views.edit_projectenv, name='edit_projectenv'),
+    url(r'^projectenv/$', project.projectenv, name='projectenv'),
+    url(r'^add/projectenv/$', project.add_projectenv, name='add_projectenv'),
+    url(r'^del/projectenv/(\d+)/$', project.del_projectenv, name='del_projectenv'),
+    url(r'^edit/projectenv/(\d+)/$', project.edit_projectenv, name='edit_projectenv'),
+
+    url(r'^deploy/(?P<env_id>\d+)/$', deploy.deploy, name='deploy'),
+    url(r'^add/deploy/(?P<env_id>\d+)/$', deploy.add_deploy, name='add_deploy'),
+    url(r'^del/deploy/(\d+)/$', deploy.del_deploy, name='del_deploy'),
+    url(r'^edit/deploy/(\d+)/$', deploy.edit_deploy, name='edit_deploy'),
 
 ]
