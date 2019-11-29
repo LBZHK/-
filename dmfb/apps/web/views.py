@@ -211,3 +211,7 @@ def edit_projectenv(request,id):
             return redirect('projectenv')
         else:
             return render(request, 'add_projectenv.html', {'projectenv_obj': projectenv_obj})
+			
+			
+def heihei(request):
+	return HttpResponse('嘿嘿嘿')
